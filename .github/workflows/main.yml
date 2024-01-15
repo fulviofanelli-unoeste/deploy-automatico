@@ -1,0 +1,28 @@
+name: Publicação automática
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Sincronizando com o Github
+              uses: actions/checkout@v3
+            - name: Publicando
+              uses: SamKirkland/web-deploy@v1
+              with:
+                target-server: ${{ secrets.host }}
+                remote-user: ubuntu
+                private-ssh-key: ${{ secrets.key }}
+                destination-path: /home/ubuntu/deploy-automatico/
+            - name: Aplicando as mudanças
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                host: ${{ secrets.host }}
+                username: ubuntu
+                key: ${{ secrets.key }}
+                port: 22
+                #server é nome da nossa aplicação no PM2
+                script: pm2 restart server
