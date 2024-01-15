@@ -26,3 +26,4 @@ jobs:
                 port: 22
                 #server é nome da nossa aplicação no PM2
                 script: pm2 restart server
+
